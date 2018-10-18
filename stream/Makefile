@@ -1,9 +1,7 @@
-# define c compiler if not done yet
-CC ?= icc
-
 PROG=stream_task
 FILE_ENDING=.c
 CUR_COMPILER=$(CC)
+FLAGS_OPENMP ?= -qopenmp
 
 ADD_COMPILE_FLAGS=-I../_util/ -qopt-streaming-stores=always
 ADD_COMPILE_FLAGS_GCC=-I../_util/

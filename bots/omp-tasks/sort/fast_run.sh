@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROG_CMD=./stream_task.exe
+PROG_CMD="./sort.exe -n $((2**31))"
 #PROG_VERSION=deb
 PROG_VERSION=rel
 
@@ -8,15 +8,6 @@ export KMP_TASK_STEALING_CONSTRAINT=0 # needs to be disabled at the moment
 export OMP_PLACES=cores 
 export OMP_PROC_BIND=spread 
 export OMP_NUM_THREADS=8
-
-# flip data chunks for which tasks are created in parallel creator scenario 
-export T_AFF_INVERTED=0
-# flag whether to apply single creator scenario 
-export T_AFF_SINGLE_CREATOR=1
-# multiplication factor used for over-subscription
-export T_AFF_NUM_TASK_MULTIPLICATOR=16
-# array size used for STREAM
-export STREAM_ARRAY_SIZE=$((2**31))
 
 function eval_run {
   curname=$1
@@ -28,8 +19,8 @@ function eval_run {
 
   # make sure to disable NUMA balancer (if available on your system)
   # we had a script for that on our systems called "no_numa_balancing"
-  # no_numa_balancing "${PROG_CMD}" &> output_${curname}.txt
-  "${PROG_CMD}" &> output_${curname}.txt
+  # no_numa_balancing ${PROG_CMD} &> output_${curname}.txt
+  ${PROG_CMD} &> output_${curname}.txt
 
   grep "Elapsed time" output_${curname}.txt
 }
@@ -47,7 +38,6 @@ export C_INCLUDE_PATH=${RUNTIME_AFF_REL_DIR}/include:${C_INCLUDE_PATH}
 export CPLUS_INCLUDE_PATH=${RUNTIME_AFF_REL_DIR}/include:${CPLUS_INCLUDE_PATH}
 
 # execute tests with and without affinity
-eval_run "standard-stream"
 eval_run "llvm"
 eval_run "domain.lowest"
 #eval_run "domain.rand"
