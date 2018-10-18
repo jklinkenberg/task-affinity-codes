@@ -7,7 +7,7 @@ PROG_VERSION=rel
 export KMP_TASK_STEALING_CONSTRAINT=0
 export OMP_PLACES=cores 
 export OMP_PROC_BIND=spread 
-export OMP_NUM_THREADS=12
+export OMP_NUM_THREADS=8
 
 # additionally specify number of tasks / over-decomposition
 export CG_NUM_TASKS=$(($OMP_NUM_THREADS * 16))
@@ -23,8 +23,8 @@ function eval_run {
 
   # make sure to disable NUMA balancer (if available on your system)
   # we had a script for that on our systems called "no_numa_balancing"
-  # no_numa_balancing "${PROG_CMD}" &> output_${curname}.txt
-  "${PROG_CMD}" &> output_${curname}.txt
+  # no_numa_balancing ${PROG_CMD} &> output_${curname}.txt
+  ${PROG_CMD} &> output_${curname}.txt
 
   grep "Elapsed time" output_${curname}.txt
 }
